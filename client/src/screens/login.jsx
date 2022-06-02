@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useDispatch } from "react-redux";
-import { logIn } from "../redux/apiCalls";
+import { logIn, logIntoApp } from "../redux/apiCalls";
 import { registerSwitch } from "../redux/uiSlice";
 
 import {
@@ -15,9 +15,21 @@ import {
   HStack,
   Center,
   NativeBaseProvider,
+  Spinner,
+  useToast,
 } from "native-base";
+import { loginSuccess } from "../redux/authSlice";
 
 const Login = ({ navigation }) => {
+  const [formData, setData] = React.useState({});
+  const toast = useToast();
+  const [isLoading, setLoading] = React.useState(false);
+  const dispatch = useDispatch();
+
+  const onSubmit = () => {
+    console.log(formData);
+    logIntoApp(dispatch, formData, setLoading, toast);
+  };
   return (
     <Center w="100%">
       <Box safeArea p="2" py="8" w="90%" maxW="290">
@@ -45,15 +57,24 @@ const Login = ({ navigation }) => {
 
         <VStack space={3} mt="5">
           <FormControl>
-            <FormControl.Label>Mobile</FormControl.Label>
-            <Input />
+            <FormControl.Label>Student ID</FormControl.Label>
+            <Input
+              onChangeText={(value) =>
+                setData({ ...formData, studentId: value })
+              }
+            />
           </FormControl>
           <FormControl>
             <FormControl.Label>Password</FormControl.Label>
-            <Input type="password" />
+            <Input
+              onChangeText={(value) =>
+                setData({ ...formData, password: value })
+              }
+              type="password"
+            />
           </FormControl>
-          <Button mt="2" colorScheme="indigo">
-            Sign in
+          <Button onPress={onSubmit} mt="2" colorScheme="indigo">
+            {isLoading ? <Spinner color="warning.500" /> : "Log In"}
           </Button>
           <HStack mt="6" justifyContent="center">
             <Text

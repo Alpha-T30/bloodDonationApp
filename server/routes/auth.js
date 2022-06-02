@@ -52,7 +52,7 @@ router.post("/refresh", (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
-    const user = await User.findOne({ mobile: req.body.mobile });
+    const user = await User.findOne({ sutdentId: req.body.sutdentId });
 
     !user && res.status(401).json("Wrong credentials!");
 
@@ -86,9 +86,16 @@ router.post("/register", async (req, res) => {
     name: req.body.name,
     mobile: req.body.mobile,
     email: req.body.email,
-    districtId: req.body.districtId,
-    subDistrictId: req.body.subDistrictId,
+    // districtId: req.body.districtId,
+    // subDistrictId: req.body.subDistrictId,
+    bloodGroupId: req.body.bloodGroupId,
+
+    // not ids
+    // district: req.body.district,
+    // subDistrict: req.body.subDistrict,
     bloodGroup: req.body.bloodGroup,
+    sutdentId: req.body.sutdentId,
+    session: req.body.session,
     password: CryptoJS.AES.encrypt(
       req.body.password,
       process.env.PASS_SEC

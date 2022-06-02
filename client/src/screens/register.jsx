@@ -13,6 +13,8 @@ import {
   ScrollView,
   Select,
   CheckIcon,
+  Spinner,
+  useToast,
 } from "native-base";
 import SearchableDropdown from "react-native-searchable-dropdown";
 import { bloodGroup, districts, subDistricts } from "../../Data/data";
@@ -20,11 +22,17 @@ import SearchAndPic from "./SearchAndPick";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LogBox } from "react-native";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
+import { register } from "../redux/apiCalls";
 const Register = ({ navigation }) => {
   const [districtSelect, setDistrict] = React.useState(null);
   const [bloodGroupselect, setBloodGroup] = React.useState([]);
   const [subDistrict, setSubDistrict] = React.useState([]);
   const [singleSub, setSingleSub] = React.useState(null);
+  const [formData, setData] = React.useState({});
+  const [error, setError] = React.useState(false);
+  const [isLoading, setLoading] = React.useState(false);
+  const toast = useToast();
+
   React.useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
@@ -41,6 +49,29 @@ const Register = ({ navigation }) => {
     //  const temp = subDistricts.filter(item=>item.districtId===item.id)
     //  setSubDistrict(temp)
   };
+
+  const onSubmit = () => {
+    const findblood = bloodGroup.find((i) => i.id === bloodGroupselect);
+    // const findDistrict = districts.find((i) => i.id === districtSelect);
+    // const findSubDistrict = subDistricts.find((i) => i.id === singleSub);
+    if (formData.password !== formData.confirmPass) {
+      setError(true);
+    } else {
+      const sendingData = {
+        ...formData,
+        bloodGroupId: bloodGroupselect,
+        bloodGroup: findblood?.name,
+
+        // districtId: districtSelect,
+        // subDistrictId: singleSub,
+
+        // district: findDistrict.name,
+        // subDistrict: findSubDistrict.name,
+      };
+      console.log(sendingData);
+      register(sendingData, setLoading, navigation, toast);
+    }
+  };
   return (
     <Center w="100%">
       <ScrollView
@@ -56,11 +87,33 @@ const Register = ({ navigation }) => {
           <VStack space={3}>
             <FormControl>
               <FormControl.Label>Name</FormControl.Label>
-              <Input />
+              <Input
+                onChangeText={(value) => setData({ ...formData, name: value })}
+              />
             </FormControl>
             <FormControl>
               <FormControl.Label>Mobile</FormControl.Label>
-              <Input />
+              <Input
+                onChangeText={(value) =>
+                  setData({ ...formData, mobile: value })
+                }
+              />
+            </FormControl>
+            <FormControl>
+              <FormControl.Label>Student ID</FormControl.Label>
+              <Input
+                onChangeText={(value) =>
+                  setData({ ...formData, studentId: value })
+                }
+              />
+            </FormControl>
+            <FormControl>
+              <FormControl.Label>Session</FormControl.Label>
+              <Input
+                onChangeText={(value) =>
+                  setData({ ...formData, session: value })
+                }
+              />
             </FormControl>
             <FormControl>
               <FormControl.Label>Blood Group</FormControl.Label>
@@ -83,7 +136,7 @@ const Register = ({ navigation }) => {
                 })}
               </Select>
             </FormControl>
-            <FormControl>
+            {/* <FormControl>
               <FormControl.Label>Select District</FormControl.Label>
               <Select
                 selectedValue={districtSelect}
@@ -103,8 +156,8 @@ const Register = ({ navigation }) => {
                   );
                 })}
               </Select>
-            </FormControl>
-            <FormControl>
+            </FormControl> */}
+            {/* <FormControl>
               <FormControl.Label>Select Sub-District</FormControl.Label>
               <Select
                 selectedValue={singleSub}
@@ -124,19 +177,33 @@ const Register = ({ navigation }) => {
                   );
                 })}
               </Select>
-            </FormControl>
+            </FormControl> */}
 
             <FormControl>
               <FormControl.Label>Password</FormControl.Label>
-              <Input type="password" />
+              <Input
+                onChangeText={(value) =>
+                  setData({ ...formData, password: value })
+                }
+                type="password"
+              />
             </FormControl>
             <FormControl>
               <FormControl.Label>Confirm Password</FormControl.Label>
-              <Input type="password" />
+              <Input
+                onChangeText={(value) =>
+                  setData({ ...formData, confirmPass: value })
+                }
+                type="password"
+              />
             </FormControl>
-            <Button mt="2" colorScheme="indigo">
-              Sign up
+            <Button onPress={onSubmit} mt="2" colorScheme="indigo">
+              {isLoading ? <Spinner color="warning.500" /> : "Sign up"}
             </Button>
+
+            <Text style={{ color: "red" }}>
+              {error ? "Password Does Not Matched" : ""}
+            </Text>
             <HStack mt="6" justifyContent="center">
               <Text
                 fontSize="sm"

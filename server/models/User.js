@@ -5,13 +5,28 @@ const UserSchema = new mongoose.Schema(
     name: { type: String, required: true },
     mobile: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    bloodGroup: {
+    bloodGroupId: {
       type: String,
-      enum: ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"],
+
       require: true,
     },
-    districtId: { type: String, required: true },
-    subDistrictId: { type: String, required: true },
+    // districtId: { type: String, required: true },
+    // subDistrictId: { type: String, required: true },
+    bloodGroup: {
+      type: String,
+
+      require: true,
+    },
+    session: {
+      type: String,
+    },
+    studentId: {
+      type: String,
+
+      require: true,
+    },
+    // district: { type: String, required: true },
+    // subDistrict: { type: String, required: true },
 
     appId: { type: String },
     isAdmin: {

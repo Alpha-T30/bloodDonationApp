@@ -1,14 +1,19 @@
 import { View, Text, Button } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import { allClear, logOut } from "../redux/apiCalls";
+import { allClear, getAllUsers, logOut } from "../redux/apiCalls";
 
 export default function Home({ navigation }) {
   const user = useSelector(
     (state) => state.persistedData.auth?.currentUser?.userData
   );
+  const allUsers = useSelector((state) => state.user.allUsers);
   const dispatch = useDispatch();
+  console.log(allUsers);
+  useEffect(() => {
+    // getAllUsers(dispatch);
+  }, []);
   return (
     <View
       style={{ flex: 1, alignItems: "center", justifyContent: "space-around" }}
