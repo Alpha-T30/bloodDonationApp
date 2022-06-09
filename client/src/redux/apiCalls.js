@@ -68,12 +68,24 @@ export const allClear = async (dispatch) => {
 };
 
 //users
-export const getAllUsers = async (dispatch) => {
+// export const getAllUsers = async (dispatch) => {
+//   try {
+//     const res = await apiLink.get("/users/");
+//     dispatch(getAllUserSuccess(res.data));
+//   } catch (error) {
+//     console.log(error);
+//     throw error;
+//   }
+// };
+export const getAllUsers = async (dispatch, setLoading) => {
+  setLoading(true);
   try {
-    const res = apiLink.get("/users/");
+    const res = await apiLink.get("/users/allUsers/");
+    console.log(res.data, "apicalls");
     dispatch(getAllUserSuccess(res.data));
+    setLoading(false);
   } catch (error) {
     console.log(error);
-    throw error;
+    setLoading(false);
   }
 };

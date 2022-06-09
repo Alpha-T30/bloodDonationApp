@@ -30,14 +30,12 @@ export default function AppEntry() {
         {!currentUser ? (
           <>
             <Stack.Screen
-              options={{ title: "Login Page" }}
+              options={{ headerShown: false }}
               name="Login"
               component={Login}
             />
             <Stack.Screen
-              options={
-                ({ title: "Register Page" }, { headerBackVisible: false })
-              }
+              options={{ headerShown: false }}
               name="Register"
               component={Register}
             />
