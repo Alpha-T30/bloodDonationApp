@@ -5,8 +5,13 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { useSelector } from "react-redux";
 import AppEntry from "./AppEntry";
-import { NativeBaseProvider } from "native-base";
+import { extendTheme, NativeBaseProvider } from "native-base";
+const config = {
+  useSystemColorMode: false,
+  initialColorMode: "dark",
+};
 
+const customTheme = extendTheme({ config });
 export default function App() {
   const Stack = createNativeStackNavigator();
   return (

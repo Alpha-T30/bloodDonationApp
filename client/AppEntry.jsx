@@ -38,7 +38,7 @@ const theme = extendTheme({
     Select: {
       // Can simply pass default props to change default behaviour of components.
       baseStyle: {
-        borderColor: "rgba(0, 0, 0, 0)",
+        // borderColor: "rgba(0, 0, 0, 0)",
       },
     },
   },
@@ -81,35 +81,15 @@ export default function AppEntry() {
             <>
               <Stack.Screen
                 options={{
+                  headerShown: false,
                   headerStyle: {
-                    backgroundColor: "crimson",
-                    elevation: 20,
+                    backgroundColor: "rgba(0, 0, 0, 0)",
+                    padding: 0,
+                    margin: 0,
                   },
                   headerTitle: () => (
                     <View style={styles.topBar}>
-                      <View style={styles.filter}>
-                        <Select
-                          selectedValue={bGroup}
-                          mx={{
-                            base: 0,
-                            md: "auto",
-                          }}
-                          onValueChange={(nextValue) =>
-                            handlegbSelect(nextValue)
-                          }
-                          _selectedItem={{
-                            bg: "cyan.600",
-                          }}
-                          accessibilityLabel="Select a blood group"
-                        >
-                          <Select.Item label={"All"} value={""} />
-
-                          {bloodGroup.map((b) => (
-                            <Select.Item label={b.name} value={b.name} />
-                          ))}
-                        </Select>
-                      </View>
-                      <View style={styles.searchbar}>
+                      {/* <View style={styles.searchbar}>
                         <SearchBar
                           // spinnerVisibility={true}
                           placeholder="Search here.."
@@ -127,7 +107,7 @@ export default function AppEntry() {
                           spinnerVisibility={true}
                           shadowStyle={styles.searchBarShadowStyle}
                         />
-                      </View>
+                      </View> */}
                       <View style={styles.menu}>
                         <Menu
                           shadow={2}

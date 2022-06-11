@@ -1,4 +1,10 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ImageBackground,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -16,8 +22,12 @@ import {
   Input,
   Select,
   CheckIcon,
+  Text,
 } from "native-base";
 import { bloodGroup, districts, subDistricts } from "../../Data/data";
+import SearchBar from "react-native-dynamic-search-bar";
+import { SafeAreaView } from "react-native-safe-area-context";
+import RNBounceable from "@freakycoder/react-native-bounceable";
 
 export default function Home({ navigation }) {
   const [showModal, setShowModal] = useState(false);
@@ -31,7 +41,7 @@ export default function Home({ navigation }) {
   );
   const allUsers = useSelector((state) => state.user.allUsers);
   const dispatch = useDispatch();
-
+  const [bGroup, setbGroup] = useState("");
   useEffect(() => {
     getAllUsers(dispatch, setLoading);
   }, [dispatch]);
@@ -55,116 +65,203 @@ export default function Home({ navigation }) {
     console.log(sendingData);
     // register(sendingData, setLoading, navigation, toast);
   };
+  const searchFun = (text) => {
+    console.log(text);
+  };
+  const handleMenu = () => {
+    console.log("hello clicked");
+  };
+  const handlegbSelect = (bg) => {
+    setbGroup(bg);
+  };
   return (
-    <View
-      style={{ flex: 1, alignItems: "center", justifyContent: "space-around" }}
+    <ImageBackground
+      source={require("../images/bg.jpg")}
+      style={styles.maincontainer}
     >
-      {allUsers.map((user, i) => {
-        return <CustomCard userData={user} key={i}></CustomCard>;
-      })}
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <SafeAreaView>
+            <View style={styles.header}>
+              <View style={styles.searchbar}>
+                <SearchBar
+                  // spinnerVisibility={true}
+                  placeholder="Search here.."
+                  fontFamily="BurbankBigCondensed-Black"
+                  // shadowStyle={styles.searchBarShadowStyle}
+                  darkMode={true}
+                  onChangeText={searchFun}
+                  height={50}
+                  fontSize={17}
+                  fontColor="#fdfdfd"
+                  iconColor="#fdfdfd"
+                  shadowColor="red"
+                  cancelIconColor="#fdfdfd"
+                  // backgroundColor="#ba312f"
+                  spinnerVisibility={true}
+                  shadowStyle={styles.searchBarShadowStyle}
+                />
+              </View>
+              {/* <View style={styles.filter}>
+                <Select
+                  color={"light.100"}
+                  w="88%"
+                  selectedValue={bGroup}
+                  mx={{
+                    base: 0,
+                    md: "auto",
+                  }}
+                  onValueChange={(nextValue) => handlegbSelect(nextValue)}
+                  _selectedItem={{
+                    bg: "cyan.600",
+                  }}
+                  accessibilityLabel="Select a blood group"
+                >
+                  <Select.Item color={"light.100"} label={"All"} value={""} />
 
-      {/* <Button title="Log Out" onPress={() => logOut(dispatch)} /> */}
+                  {bloodGroup.map((b, i) => (
+                    <Select.Item key={i} label={b.name} value={b.name} />
+                  ))}
+                </Select>
+              </View> */}
+            </View>
+          </SafeAreaView>
+          <View style={styles.content}>
+            {allUsers.map((user, i) => {
+              return <CustomCard userData={user} key={i}></CustomCard>;
+            })}
+          </View>
 
-      <TouchableOpacity
-        style={styles.addBtn}
-        onPress={() => {
-          setShowModal(true);
-        }}
-      >
-        <Image style={styles.img} source={require("../images/add-user.png")} />
-      </TouchableOpacity>
+          <RNBounceable
+            style={styles.addBtn}
+            onPress={() => {
+              setShowModal(true);
+            }}
+          >
+            <Image
+              style={styles.img}
+              source={require("../images/add-user.png")}
+            />
+          </RNBounceable>
 
-      <Modal
-        safeAreaTop={true}
-        isOpen={showModal}
-        onClose={() => {
-          setShowModal(false);
-          setShowBtn(true);
-        }}
-      >
-        <Modal.Content size={"full"}>
-          <Modal.CloseButton />
-          <Modal.Header>Add New User</Modal.Header>
-          <Modal.Body>
-            <FormControl>
-              <FormControl.Label>Name</FormControl.Label>
-              <Input
-                onChangeText={(value) => setData({ ...formData, name: value })}
-              />
-            </FormControl>
-            <FormControl>
-              <FormControl.Label>Mobile</FormControl.Label>
-              <Input
-                onChangeText={(value) =>
-                  setData({ ...formData, mobile: value })
-                }
-              />
-            </FormControl>
-            <FormControl>
-              <FormControl.Label>Student ID</FormControl.Label>
-              <Input
-                onChangeText={(value) =>
-                  setData({ ...formData, studentId: value })
-                }
-              />
-            </FormControl>
-            <FormControl>
-              <FormControl.Label>Session</FormControl.Label>
-              <Input
-                onChangeText={(value) =>
-                  setData({ ...formData, session: value })
-                }
-              />
-            </FormControl>
-            <FormControl>
-              <FormControl.Label>Blood Group</FormControl.Label>
-              <Select
-                selectedValue={bloodGroupselect}
-                minWidth="200"
-                accessibilityLabel="Select Blood Group"
-                placeholder="Select Blood Group"
-                _selectedItem={{
-                  bg: "teal.600",
-                  endIcon: <CheckIcon size="5" />,
-                }}
-                mt={1}
-                onValueChange={(itemValue) => setBloodGroup(itemValue)}
-              >
-                {bloodGroup.map((item, i) => {
-                  return (
-                    <Select.Item key={i} label={item.name} value={item.id} />
-                  );
-                })}
-              </Select>
-            </FormControl>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button.Group space={2}>
-              <Button
-                variant="ghost"
-                colorScheme="blueGray"
-                onPress={() => {
-                  setShowModal(false);
-                  setShowBtn(true);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button onPress={onSubmit}>Save</Button>
-            </Button.Group>
-          </Modal.Footer>
-        </Modal.Content>
-      </Modal>
-    </View>
+          <RNBounceable style={styles.addBtn2} onPress={() => {}}>
+            <Image style={styles.img2} source={require("../images/exit.png")} />
+          </RNBounceable>
+
+          {/* <Button title="Log Out" onPress={() => logOut(dispatch)} /> */}
+
+          <Modal
+            safeAreaTop={true}
+            isOpen={showModal}
+            onClose={() => {
+              setShowModal(false);
+              setShowBtn(true);
+            }}
+          >
+            <Modal.Content
+              color={"light.100"}
+              backgroundColor={"darkBlue.900"}
+              style={{ width: "95%" }}
+              size={"full"}
+            >
+              <Modal.CloseButton />
+              <Modal.Header backgroundColor={"blueGray.900"} color="light.100">
+                <Text color={"light.100"}> Add New User</Text>
+              </Modal.Header>
+              <Modal.Body>
+                <FormControl>
+                  <FormControl.Label>Name</FormControl.Label>
+                  <Input
+                    color={"light.100"}
+                    onChangeText={(value) =>
+                      setData({ ...formData, name: value })
+                    }
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormControl.Label>Mobile</FormControl.Label>
+                  <Input
+                    color={"light.100"}
+                    onChangeText={(value) =>
+                      setData({ ...formData, mobile: value })
+                    }
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormControl.Label>Student ID</FormControl.Label>
+                  <Input
+                    color={"light.100"}
+                    onChangeText={(value) =>
+                      setData({ ...formData, studentId: value })
+                    }
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormControl.Label>Session</FormControl.Label>
+                  <Input
+                    color={"light.100"}
+                    onChangeText={(value) =>
+                      setData({ ...formData, session: value })
+                    }
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormControl.Label>Blood Group</FormControl.Label>
+                  <Select
+                    color={"light.100"}
+                    selectedValue={bloodGroupselect}
+                    minWidth="200"
+                    accessibilityLabel="Select Blood Group"
+                    placeholder="Select Blood Group"
+                    _selectedItem={{
+                      bg: "teal.600",
+                      endIcon: <CheckIcon size="5" />,
+                    }}
+                    mt={1}
+                    onValueChange={(itemValue) => setBloodGroup(itemValue)}
+                  >
+                    {bloodGroup.map((item, i) => {
+                      return (
+                        <Select.Item
+                          backgroundColor={"dark.500"}
+                          key={i}
+                          label={item.name}
+                          value={item.id}
+                        />
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              </Modal.Body>
+              <Modal.Footer backgroundColor={"darkBlue.900"}>
+                <Button.Group space={2}>
+                  <Button
+                    variant="ghost"
+                    colorScheme="blueGray"
+                    onPress={() => {
+                      setShowModal(false);
+                      setShowBtn(true);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button onPress={onSubmit}>Save</Button>
+                </Button.Group>
+              </Modal.Footer>
+            </Modal.Content>
+          </Modal>
+        </View>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  maincontainer: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
   },
   addBtn: {
     borderRadius: 50,
@@ -181,9 +278,65 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    borderColor: "gold",
+    borderRightWidth: 2,
+    padding: 5,
+  },
+  addBtn2: {
+    borderRadius: 50,
+    padding: 10,
+    width: 50,
+    height: 50,
+    bottom: 15,
+    left: 15,
+    position: "absolute",
+    shadowColor: "#303838",
+    shadowOffset: { width: 0, height: 5 },
+    shadowRadius: 10,
+    shadowOpacity: 0.35,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+
+    borderRightWidth: 2,
+    padding: 5,
   },
   img: {
     width: 40,
     height: 40,
+  },
+  img2: {
+    width: 50,
+    height: 50,
+  },
+  topBar: {
+    // width:100,
+    display: "flex",
+    flexDirection: "row",
+
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginLeft: -22,
+    marginTop: 10,
+  },
+  filter: {
+    marginTop: 10,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  searchbar: {},
+  menu: {
+    flex: 1,
+    // backgroundColor: "green",
+    marginRight: 10,
+  },
+  searchBarShadowStyle: {
+    elevation: 20,
+    shadowColor: "#52006A",
+  },
+  header: {
+    display: "flex",
+    flexDirection: "column",
   },
 });
