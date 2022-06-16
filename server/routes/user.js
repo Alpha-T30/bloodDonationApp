@@ -7,6 +7,24 @@ const {
 
 const router = require("express").Router();
 
+router.post("/addNewUser", verifyTokenAndAdmin, async (req, res) => {
+  const newUser = new User(req.body);
+  try {
+    const userFound = await User.findOne({
+      studentId: req.body.studentId,
+    });
+
+    if (userFound) {
+      res.status(409).send("user already exists");
+    } else {
+      const savedUser = await newUser.save();
+      res.status(200).json(savedUser);
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 //UPDATE
 router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
   if (req.body.password) {

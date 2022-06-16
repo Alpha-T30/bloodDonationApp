@@ -2,7 +2,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
 import jwt_decode from "jwt-decode";
-const baseUrl = "http://192.168.0.102:3030/api/";
+const baseUrl = "http://192.168.0.119:3030/api/";
 
 export const publicRequest = axios.create({
   baseURL: baseUrl,

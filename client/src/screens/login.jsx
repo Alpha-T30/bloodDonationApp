@@ -2,6 +2,7 @@ import * as React from "react";
 import { useDispatch } from "react-redux";
 import { logIn, logIntoApp } from "../redux/apiCalls";
 import { registerSwitch } from "../redux/uiSlice";
+import { Wave } from "react-native-animated-spinkit";
 
 import {
   Box,
@@ -73,8 +74,8 @@ const Login = ({ navigation }) => {
               type="password"
             />
           </FormControl>
-          <Button onPress={onSubmit} mt="2" colorScheme="indigo">
-            {isLoading ? <Spinner color="warning.500" /> : "Log In"}
+          <Button onPress={onSubmit} mt="2" h={"10"} colorScheme="indigo">
+            {isLoading ? <Wave size={34} color="#FFF"></Wave> : "Log In"}
           </Button>
           <HStack mt="6" justifyContent="center">
             <Text

@@ -4,17 +4,24 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
+  ScrollView,
+  RefreshControl,
+  LogBox,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import { allClear, getAllUsers, logOut } from "../redux/apiCalls";
+import {
+  allClear,
+  getAllUsers,
+  logOut,
+  registerByAdmin,
+} from "../redux/apiCalls";
 import CustomCard from "../components/Card";
 import { FloatingAction } from "react-native-floating-action";
 import {
   Modal,
   Button,
-  ScrollView,
   Center,
   VStack,
   NativeBaseProvider,
@@ -23,29 +30,48 @@ import {
   Select,
   CheckIcon,
   Text,
+  Toast,
+  useToast,
 } from "native-base";
 import { bloodGroup, districts, subDistricts } from "../../Data/data";
 import SearchBar from "react-native-dynamic-search-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import RNBounceable from "@freakycoder/react-native-bounceable";
-
+import { Chase, Fold } from "react-native-animated-spinkit";
 export default function Home({ navigation }) {
+  LogBox.ignoreLogs(["Possible Unhandled Promise Rejection"]);
+
   const [showModal, setShowModal] = useState(false);
   const [showBtn, setShowBtn] = useState(true);
-  const [isLoading, setLoading] = useState(false);
+  const [isCustomerLoading, setCustomerLoading] = useState(false);
+  const [isLoading1, setLoading1] = useState(false);
+  const [searchIconLoading, setSearchIconLoading] = useState(false);
   const [formData, setData] = React.useState({});
   const [bloodGroupselect, setBloodGroup] = React.useState([]);
-
+  const toast = useToast();
   const user = useSelector(
     (state) => state.persistedData.auth?.currentUser?.userData
   );
   const allUsers = useSelector((state) => state.user.allUsers);
+
+  const [users, setUsers] = useState(allUsers);
+  const [data, setUserData] = useState(allUsers);
+  const [bGroup, setbGroup] = useState("All");
   const dispatch = useDispatch();
-  const [bGroup, setbGroup] = useState("");
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    getAllUsers(dispatch, setRefreshing);
+  }, []);
   useEffect(() => {
-    getAllUsers(dispatch, setLoading);
+    getAllUsers(dispatch, setCustomerLoading);
   }, [dispatch]);
 
+  useEffect(() => {
+    setUsers(allUsers);
+    setUserData(allUsers);
+  }, [allUsers]);
   const onSubmit = () => {
     const findblood = bloodGroup.find((i) => i.id === bloodGroupselect);
     // const findDistrict = districts.find((i) => i.id === districtSelect);
@@ -63,17 +89,32 @@ export default function Home({ navigation }) {
       // subDistrict: findSubDistrict.name,
     };
     console.log(sendingData);
-    // register(sendingData, setLoading, navigation, toast);
+    registerByAdmin(sendingData, setLoading1, dispatch, toast);
   };
-  const searchFun = (text) => {
-    console.log(text);
-  };
+
   const handleMenu = () => {
     console.log("hello clicked");
   };
   const handlegbSelect = (bg) => {
     setbGroup(bg);
+    if (bg === "All") {
+      setUsers(allUsers);
+    } else {
+      setUsers(allUsers.filter((u) => u.bloodGroup === bg));
+    }
   };
+
+  const [query, setQuery] = useState("");
+  useEffect(() => {
+    const keys = ["name", "mobile", "studentId", "bloodGroup"];
+
+    let temp = data.filter((item) =>
+      keys.some((key) => item[key].toLowerCase().includes(query))
+    );
+    setUsers(temp);
+    setSearchIconLoading(false);
+  }, [query]);
+
   return (
     <ImageBackground
       source={require("../images/bg.jpg")}
@@ -85,12 +126,20 @@ export default function Home({ navigation }) {
             <View style={styles.header}>
               <View style={styles.searchbar}>
                 <SearchBar
-                  // spinnerVisibility={true}
+                  spinnerVisibility={searchIconLoading}
+                  onClearPress={() => {
+                    setSearchIconLoading(true);
+
+                    setQuery("");
+                  }}
                   placeholder="Search here.."
                   fontFamily="BurbankBigCondensed-Black"
                   // shadowStyle={styles.searchBarShadowStyle}
                   darkMode={true}
-                  onChangeText={searchFun}
+                  onChangeText={(text) => {
+                    setSearchIconLoading(true);
+                    setQuery(text.toLowerCase());
+                  }}
                   height={50}
                   fontSize={17}
                   fontColor="#fdfdfd"
@@ -98,11 +147,11 @@ export default function Home({ navigation }) {
                   shadowColor="red"
                   cancelIconColor="#fdfdfd"
                   // backgroundColor="#ba312f"
-                  spinnerVisibility={true}
+
                   shadowStyle={styles.searchBarShadowStyle}
                 />
               </View>
-              {/* <View style={styles.filter}>
+              <View style={styles.filter}>
                 <Select
                   color={"light.100"}
                   w="88%"
@@ -117,20 +166,41 @@ export default function Home({ navigation }) {
                   }}
                   accessibilityLabel="Select a blood group"
                 >
-                  <Select.Item color={"light.100"} label={"All"} value={""} />
+                  <Select.Item
+                    color={"light.100"}
+                    label={"All Blood Group"}
+                    value={"All"}
+                  />
 
                   {bloodGroup.map((b, i) => (
                     <Select.Item key={i} label={b.name} value={b.name} />
                   ))}
                 </Select>
-              </View> */}
+              </View>
             </View>
           </SafeAreaView>
-          <View style={styles.content}>
-            {allUsers.map((user, i) => {
-              return <CustomCard userData={user} key={i}></CustomCard>;
-            })}
-          </View>
+          {isCustomerLoading ? (
+            <Center flex={1}>
+              <Fold size={60} color="#FAC213" />
+            </Center>
+          ) : (
+            <View style={styles.content}>
+              <ScrollView
+                refreshControl={
+                  <RefreshControl
+                    colors={["blue", "gold", "grey", "red"]}
+                    tintColor="#A5BECC"
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                  />
+                }
+              >
+                {users.map((user, i) => {
+                  return <CustomCard userData={user} key={i}></CustomCard>;
+                })}
+              </ScrollView>
+            </View>
+          )}
 
           <RNBounceable
             style={styles.addBtn}
@@ -144,7 +214,12 @@ export default function Home({ navigation }) {
             />
           </RNBounceable>
 
-          <RNBounceable style={styles.addBtn2} onPress={() => {}}>
+          <RNBounceable
+            style={styles.addBtn2}
+            onPress={() => {
+              logOut(dispatch);
+            }}
+          >
             <Image style={styles.img2} source={require("../images/exit.png")} />
           </RNBounceable>
 
@@ -245,7 +320,9 @@ export default function Home({ navigation }) {
                   >
                     Cancel
                   </Button>
-                  <Button onPress={onSubmit}>Save</Button>
+                  <Button h={10} onPress={onSubmit}>
+                    {isLoading1 ? <Chase size={30} color="#FFF" /> : "Save"}
+                  </Button>
                 </Button.Group>
               </Modal.Footer>
             </Modal.Content>
@@ -338,5 +415,10 @@ const styles = StyleSheet.create({
   header: {
     display: "flex",
     flexDirection: "column",
+  },
+  content: {
+    flex: 1,
+    paddingBottom: 5,
+    marginBottom: 0,
   },
 });

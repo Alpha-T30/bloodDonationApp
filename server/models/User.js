@@ -24,6 +24,7 @@ const UserSchema = new mongoose.Schema(
       type: String,
 
       require: true,
+      unique: true,
     },
     // district: { type: String, required: true },
     // subDistrict: { type: String, required: true },

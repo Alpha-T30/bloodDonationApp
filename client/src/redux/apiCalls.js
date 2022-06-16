@@ -2,7 +2,7 @@ import apiLink, { publicRequest } from "../BackEndStuff/apiLinks";
 import { loginSuccess, logOutSuccess } from "./authSlice";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
-import { getAllUserSuccess } from "./userSlice";
+import { addNewUserSuccess, getAllUserSuccess } from "./userSlice";
 import { Box } from "native-base";
 
 export const register = async (sendingData, setLoading, navigation, toast) => {
@@ -19,6 +19,34 @@ export const register = async (sendingData, setLoading, navigation, toast) => {
     setLoading(false);
     toast.show({
       title: "Registration Failed",
+      placement: "top",
+    });
+    throw error;
+  }
+};
+
+export const registerByAdmin = async (
+  sendingData,
+  setLoading,
+  dispatch,
+  toast
+) => {
+  setLoading(true);
+  try {
+    console.log(sendingData);
+    const res = await apiLink.post("/users/addNewUser", sendingData);
+    dispatch(addNewUserSuccess(res.data));
+
+    setLoading(false);
+    toast.show({
+      title: "New user add success",
+      placement: "top",
+    });
+    dispatch();
+  } catch (error) {
+    setLoading(false);
+    toast.show({
+      title: "New User Addition Failed",
       placement: "top",
     });
     throw error;
