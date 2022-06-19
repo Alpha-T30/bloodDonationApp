@@ -12,8 +12,14 @@ const userSlice = createSlice({
     addNewUserSuccess: (state, action) => {
       state.allUsers.unshift(action.payload);
     },
+    updateUserSuccess: (state, action) => {
+      state.allUsers[
+        state.allUsers.findIndex((user) => user._id === action.payload._id)
+      ] = action.payload;
+    },
   },
 });
 
-export const { getAllUserSuccess, addNewUserSuccess } = userSlice.actions;
+export const { getAllUserSuccess, addNewUserSuccess, updateUserSuccess } =
+  userSlice.actions;
 export default userSlice.reducer;

@@ -36,8 +36,8 @@ import {
 import { bloodGroup, districts, subDistricts } from "../../Data/data";
 import SearchBar from "react-native-dynamic-search-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
-import RNBounceable from "@freakycoder/react-native-bounceable";
 import { Chase, Fold } from "react-native-animated-spinkit";
+import moment from "moment";
 export default function Home({ navigation }) {
   LogBox.ignoreLogs(["Possible Unhandled Promise Rejection"]);
 
@@ -48,27 +48,70 @@ export default function Home({ navigation }) {
   const [searchIconLoading, setSearchIconLoading] = useState(false);
   const [formData, setData] = React.useState({});
   const [bloodGroupselect, setBloodGroup] = React.useState([]);
+  // const [date, setDate] = React.useState(new Date());
+
   const toast = useToast();
-  const user = useSelector(
-    (state) => state.persistedData.auth?.currentUser?.userData
-  );
+  const user = useSelector((state) => state.persistedData.auth?.currentUser);
   const allUsers = useSelector((state) => state.user.allUsers);
 
+  const [query, setQuery] = useState("");
   const [users, setUsers] = useState(allUsers);
   const [data, setUserData] = useState(allUsers);
-  const [bGroup, setbGroup] = useState("All");
+  // const [bGroup, setbGroup] = useState("All");
+  // const [status, setStatus] = useState("Both");
+  const [filterData, setFilterData] = useState({
+    bGroup: "All",
+    status: "Both",
+  });
+
   const dispatch = useDispatch();
 
   const [refreshing, setRefreshing] = React.useState(false);
-
+  const actions = [
+    {
+      text: "Add User",
+      icon: require("../images/add-user.png"),
+      name: "btnAddUser",
+      position: 2,
+    },
+    {
+      text: "Log Out",
+      icon: require("../images/exit.png"),
+      name: "btnLogOut",
+      position: 1,
+    },
+    {
+      text: "Profile",
+      icon: require("../images/exit.png"),
+      name: "btnProfile",
+      position: 3,
+    },
+  ];
+  const getdays = (lastDonatedDate) => {
+    if (lastDonatedDate != undefined) {
+      var now = new Date();
+      var start = moment(lastDonatedDate, "YYYY-MM-DD");
+      var end = moment(now, "YYYY-MM-DD");
+      //Difference in number of days
+      var Difference_In_Days = Math.floor(
+        moment.duration(end.diff(start)).asDays()
+      );
+      console.log(parseInt(Difference_In_Days));
+      return parseInt(Difference_In_Days);
+    } else {
+      console.log(0);
+      return 0;
+    }
+  };
   const onRefresh = React.useCallback(() => {
     getAllUsers(dispatch, setRefreshing);
-  }, []);
+  }, [dispatch]);
   useEffect(() => {
     getAllUsers(dispatch, setCustomerLoading);
   }, [dispatch]);
 
   useEffect(() => {
+    // const temp = allUsers.filter((u) => getdays(u.lastDonatedDate) > 40);
     setUsers(allUsers);
     setUserData(allUsers);
   }, [allUsers]);
@@ -88,23 +131,48 @@ export default function Home({ navigation }) {
       // district: findDistrict.name,
       // subDistrict: findSubDistrict.name,
     };
-    console.log(sendingData);
     registerByAdmin(sendingData, setLoading1, dispatch, toast);
   };
 
-  const handleMenu = () => {
-    console.log("hello clicked");
-  };
-  const handlegbSelect = (bg) => {
-    setbGroup(bg);
-    if (bg === "All") {
-      setUsers(allUsers);
-    } else {
-      setUsers(allUsers.filter((u) => u.bloodGroup === bg));
-    }
-  };
+  // const filterAll = () => {
 
-  const [query, setQuery] = useState("");
+  //   const temp = allUsers;
+  //   if (bGroup !== "All") {
+  //     temp.filter((u) => {
+  //       u.bloodGroup === bGroup;
+  //     });
+  //   }
+  //   if (status !== "Both" && status === "Available") {
+  //     temp.filter((u) => {
+  //       getdays(u.lastDonatedDate) > 40;
+  //     });
+  //   }
+  //   if (status !== "Both" && status === "NotAvailable") {
+  //     temp.filter((u) => {
+  //       getdays(u.lastDonatedDate) < 40;
+  //     });
+  //   }
+  //   setUsers(temp);
+
+  // };
+  console.log(filterData);
+
+  useEffect(() => {
+    let temp = allUsers;
+    // const tem1 = temp.filter((u) => u.bloodGroup === filterData.bGroup);
+    if (filterData.bGroup !== "All") {
+      temp = temp.filter((u) => u.bloodGroup === filterData.bGroup);
+    }
+    if (filterData.status === "Available") {
+      temp = temp.filter((u) => getdays(u.lastDonatedDate) > 40);
+    }
+    if (filterData.status === "NotAvailable") {
+      temp = temp.filter((u) => getdays(u.lastDonatedDate) < 40);
+    }
+    console.log(temp);
+    setUsers(temp);
+  }, [filterData]);
+
   useEffect(() => {
     const keys = ["name", "mobile", "studentId", "bloodGroup"];
 
@@ -114,6 +182,17 @@ export default function Home({ navigation }) {
     setUsers(temp);
     setSearchIconLoading(false);
   }, [query]);
+
+  const handleMenu = (name) => {
+    if (name === "btnLogOut") {
+      logOut(dispatch);
+    } else if (name === "btnAddUser") {
+      // setShowModal(true);
+      navigation.navigate("NewUser");
+    } else if (name === "btnProfile") {
+      navigation.navigate("Profile");
+    }
+  };
 
   return (
     <ImageBackground
@@ -152,30 +231,72 @@ export default function Home({ navigation }) {
                 />
               </View>
               <View style={styles.filter}>
-                <Select
-                  color={"light.100"}
-                  w="88%"
-                  selectedValue={bGroup}
-                  mx={{
-                    base: 0,
-                    md: "auto",
-                  }}
-                  onValueChange={(nextValue) => handlegbSelect(nextValue)}
-                  _selectedItem={{
-                    bg: "cyan.600",
-                  }}
-                  accessibilityLabel="Select a blood group"
-                >
-                  <Select.Item
+                <View style={{ flex: 1, alignItems: "center" }}>
+                  <Select
                     color={"light.100"}
-                    label={"All Blood Group"}
-                    value={"All"}
-                  />
+                    w="88%"
+                    selectedValue={filterData.bGroup}
+                    mx={{
+                      base: 0,
+                      md: "auto",
+                    }}
+                    onValueChange={(nextValue) => {
+                      setFilterData({ ...filterData, bGroup: nextValue });
+                      // handlegbSelect(nextValue);
+                      // filterAll();
+                    }}
+                    _selectedItem={{
+                      bg: "cyan.600",
+                    }}
+                    accessibilityLabel="Select a blood group"
+                  >
+                    <Select.Item
+                      color={"light.100"}
+                      label={"All Blood Group"}
+                      value={"All"}
+                    />
 
-                  {bloodGroup.map((b, i) => (
-                    <Select.Item key={i} label={b.name} value={b.name} />
-                  ))}
-                </Select>
+                    {bloodGroup.map((b, i) => (
+                      <Select.Item key={i} label={b.name} value={b.name} />
+                    ))}
+                  </Select>
+                </View>
+                <View
+                  style={{
+                    flex: 1,
+
+                    alignItems: "center",
+                  }}
+                >
+                  <Select
+                    color={"light.100"}
+                    w="88%"
+                    selectedValue={filterData.status}
+                    mx={{
+                      base: 0,
+                      md: "auto",
+                    }}
+                    onValueChange={(nextValue) => {
+                      setFilterData({ ...filterData, status: nextValue });
+                    }}
+                    _selectedItem={{
+                      bg: "cyan.600",
+                    }}
+                    accessibilityLabel="Select a blood group"
+                  >
+                    <Select.Item
+                      color={"light.100"}
+                      label={"All Donors"}
+                      value={"Both"}
+                    />
+
+                    <Select.Item label={"Available"} value={"Available"} />
+                    <Select.Item
+                      label={"Not Available"}
+                      value={"NotAvailable"}
+                    />
+                  </Select>
+                </View>
               </View>
             </View>
           </SafeAreaView>
@@ -202,26 +323,13 @@ export default function Home({ navigation }) {
             </View>
           )}
 
-          <RNBounceable
-            style={styles.addBtn}
-            onPress={() => {
-              setShowModal(true);
+          <FloatingAction
+            color="#4D4C7D"
+            actions={actions}
+            onPressItem={(name) => {
+              handleMenu(name);
             }}
-          >
-            <Image
-              style={styles.img}
-              source={require("../images/add-user.png")}
-            />
-          </RNBounceable>
-
-          <RNBounceable
-            style={styles.addBtn2}
-            onPress={() => {
-              logOut(dispatch);
-            }}
-          >
-            <Image style={styles.img2} source={require("../images/exit.png")} />
-          </RNBounceable>
+          />
 
           {/* <Button title="Log Out" onPress={() => logOut(dispatch)} /> */}
 
@@ -400,7 +508,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    flexDirection: "row",
   },
   searchbar: {},
   menu: {

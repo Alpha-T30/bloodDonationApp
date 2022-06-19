@@ -75,7 +75,16 @@ const Login = ({ navigation }) => {
             />
           </FormControl>
           <Button onPress={onSubmit} mt="2" h={"10"} colorScheme="indigo">
-            {isLoading ? <Wave size={34} color="#FFF"></Wave> : "Log In"}
+            {isLoading ? (
+              <Wave
+                animating={isLoading}
+                hidesWhenStopped={isLoading}
+                size={34}
+                color="#FFF"
+              ></Wave>
+            ) : (
+              "Log In"
+            )}
           </Button>
           <HStack mt="6" justifyContent="center">
             <Text

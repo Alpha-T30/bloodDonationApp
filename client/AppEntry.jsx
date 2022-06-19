@@ -28,10 +28,11 @@ import {
   NativeBaseProvider,
   extendTheme,
 } from "native-base";
-import SearchBar from "react-native-dynamic-search-bar";
 import { AntDesign } from "@expo/vector-icons";
 import { bloodGroup } from "./Data/data";
 import { useState } from "react";
+import Profile from "./src/screens/profile";
+import NewUser from "./src/screens/newUser";
 
 const theme = extendTheme({
   components: {
@@ -51,12 +52,8 @@ export default function AppEntry() {
   const isRegisterd = useSelector((state) => state.ui.isRegisterd);
   const Stack = createNativeStackNavigator();
 
-  const searchFun = (text) => {
-    console.log(text);
-  };
-  const handleMenu = () => {
-    console.log("hello clicked");
-  };
+  const searchFun = (text) => {};
+  const handleMenu = () => {};
   const handlegbSelect = (bg) => {
     setbGroup(bg);
   };
@@ -87,53 +84,33 @@ export default function AppEntry() {
                     padding: 0,
                     margin: 0,
                   },
-                  headerTitle: () => (
-                    <View style={styles.topBar}>
-                      {/* <View style={styles.searchbar}>
-                        <SearchBar
-                          // spinnerVisibility={true}
-                          placeholder="Search here.."
-                          fontFamily="BurbankBigCondensed-Black"
-                          // shadowStyle={styles.searchBarShadowStyle}
-                          // darkMode={true}
-                          onChangeText={searchFun}
-                          height={50}
-                          fontSize={17}
-                          fontColor="#fdfdfd"
-                          iconColor="#fdfdfd"
-                          shadowColor="red"
-                          cancelIconColor="#fdfdfd"
-                          // backgroundColor="#ba312f"
-                          spinnerVisibility={true}
-                          shadowStyle={styles.searchBarShadowStyle}
-                        />
-                      </View> */}
-                      <View style={styles.menu}>
-                        <Menu
-                          shadow={2}
-                          w="190"
-                          trigger={(triggerProps) => {
-                            return (
-                              <Pressable
-                                accessibilityLabel="More options menu"
-                                {...triggerProps}
-                              >
-                                <HamburgerIcon
-                                  style={{ height: 30, width: 30 }}
-                                />
-                              </Pressable>
-                            );
-                          }}
-                        >
-                          <Menu.Item onPress={handleMenu}>Log Out</Menu.Item>
-                          <Menu.Item>Profile</Menu.Item>
-                        </Menu>
-                      </View>
-                    </View>
-                  ),
                 }}
                 name="Home"
                 component={Home}
+              />
+              <Stack.Screen
+                options={{
+                  headerStyle: {
+                    backgroundColor: "rgba(0, 0, 0, 0)",
+                    padding: 0,
+                    margin: 0,
+                  },
+                  title: "User Profile",
+                }}
+                name="Profile"
+                component={Profile}
+              />
+              <Stack.Screen
+                options={{
+                  headerStyle: {
+                    backgroundColor: "rgba(0, 0, 0, 0)",
+                    padding: 0,
+                    margin: 0,
+                  },
+                  title: "New User",
+                }}
+                name="NewUser"
+                component={NewUser}
               />
             </>
           )}

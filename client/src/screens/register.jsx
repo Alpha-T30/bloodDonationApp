@@ -37,10 +37,8 @@ const Register = ({ navigation }) => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
   const handleDistrictChange = (item) => {
-    console.log(item);
     setDistrict(item);
     const temp = subDistricts.filter((i) => i.districtId === item);
-    console.log(temp);
     setSubDistrict(temp);
   };
   const handleSubDistrict = (item) => {
@@ -61,6 +59,7 @@ const Register = ({ navigation }) => {
         ...formData,
         bloodGroupId: bloodGroupselect,
         bloodGroup: findblood?.name,
+        lastDonatedDate: new Date(),
 
         // districtId: districtSelect,
         // subDistrictId: singleSub,

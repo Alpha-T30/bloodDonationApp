@@ -53,27 +53,28 @@ router.post("/refresh", (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ studentId: req.body.studentId });
-    console.log(user);
 
-    !user && res.status(401).json("Wrong credentials!");
-
-    const hashedPassword = CryptoJS.AES.decrypt(
-      user.password,
-      process.env.PASS_SEC
-    );
-    const OriginalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
-
-    OriginalPassword !== req.body.password &&
+    if (!user) {
       res.status(401).json("Wrong credentials!");
-
-    const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user);
-    refreshTokens.push(refreshToken);
-    const { password, ...others } = user._doc;
-    res.status(200).json({
-      userData: others,
-      tokens: { accessToken, refreshToken },
-    });
+    } else {
+      const hashedPassword = CryptoJS.AES.decrypt(
+        user.password,
+        process.env.PASS_SEC
+      );
+      const OriginalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
+      if (OriginalPassword !== req.body.password) {
+        res.status(401).json("Wrong credentials!");
+      } else {
+        const accessToken = generateAccessToken(user);
+        const refreshToken = generateRefreshToken(user);
+        refreshTokens.push(refreshToken);
+        const { password, ...others } = user._doc;
+        res.status(200).json({
+          userData: others,
+          tokens: { accessToken, refreshToken },
+        });
+      }
+    }
 
     // res.status(200).json({...others, accessToken});
   } catch (err) {
@@ -87,6 +88,7 @@ router.post("/register", async (req, res) => {
     name: req.body.name,
     mobile: req.body.mobile,
     email: req.body.email,
+    lastDonatedDate: req.body.lastDonatedDate,
     // districtId: req.body.districtId,
     // subDistrictId: req.body.subDistrictId,
     bloodGroupId: req.body.bloodGroupId,

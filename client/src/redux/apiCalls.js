@@ -1,8 +1,12 @@
 import apiLink, { publicRequest } from "../BackEndStuff/apiLinks";
-import { loginSuccess, logOutSuccess } from "./authSlice";
+import { loginSuccess, logOutSuccess, usrUpdate } from "./authSlice";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
-import { addNewUserSuccess, getAllUserSuccess } from "./userSlice";
+import {
+  addNewUserSuccess,
+  getAllUserSuccess,
+  updateUserSuccess,
+} from "./userSlice";
 import { Box } from "native-base";
 
 export const register = async (sendingData, setLoading, navigation, toast) => {
@@ -33,8 +37,8 @@ export const registerByAdmin = async (
 ) => {
   setLoading(true);
   try {
-    console.log(sendingData);
     const res = await apiLink.post("/users/addNewUser", sendingData);
+    console.log(res.data);
     dispatch(addNewUserSuccess(res.data));
 
     setLoading(false);
@@ -42,14 +46,35 @@ export const registerByAdmin = async (
       title: "New user add success",
       placement: "top",
     });
-    dispatch();
   } catch (error) {
+    console.log(error);
     setLoading(false);
     toast.show({
       title: "New User Addition Failed",
       placement: "top",
     });
     throw error;
+  }
+};
+
+export const updateUser = async (dispatch, data, setLoading, toast) => {
+  setLoading(true);
+  try {
+    const res = await apiLink.put(`/users/${data._id}`, data);
+    dispatch(updateUserSuccess(res.data));
+    dispatch(usrUpdate(res.data));
+    setLoading(false);
+    toast.show({
+      title: "User Update Success",
+      placement: "top",
+    });
+  } catch (error) {
+    console.log(error);
+    setLoading(false);
+    toast.show({
+      title: "User Update Failed",
+      placement: "top",
+    });
   }
 };
 
@@ -63,12 +88,14 @@ export const logIntoApp = async (dispatch, logInData, setLoading, toast) => {
     dispatch(loginSuccess(res.data));
     setLoading(false);
   } catch (error) {
+    setLoading(false);
     console.log(error);
     setLoading(false);
     toast.show({
       placement: "bottom",
       title: "Login failed",
     });
+    setLoading(false);
     throw error;
   }
 };
@@ -109,7 +136,6 @@ export const getAllUsers = async (dispatch, setLoading) => {
   setLoading(true);
   try {
     const res = await apiLink.get("/users/allUsers/");
-    console.log(res.data, "apicalls");
     dispatch(getAllUserSuccess(res.data));
     setLoading(false);
   } catch (error) {

@@ -20,6 +20,9 @@ const UserSchema = new mongoose.Schema(
     session: {
       type: String,
     },
+    lastDonatedDate: {
+      type: Date,
+    },
     studentId: {
       type: String,
 

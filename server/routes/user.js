@@ -1,4 +1,6 @@
 const User = require("../models/User");
+const CryptoJS = require("crypto-js");
+const jwt = require("jsonwebtoken");
 const {
   verifyToken,
   verifyTokenAndAuthorization,
@@ -8,7 +10,15 @@ const {
 const router = require("express").Router();
 
 router.post("/addNewUser", verifyTokenAndAdmin, async (req, res) => {
-  const newUser = new User(req.body);
+  const newUser = new User({
+    ...req.body,
+    password: CryptoJS.AES.encrypt(
+      req.body.password,
+      process.env.PASS_SEC
+    ).toString(),
+    lastDonatedDate: req.body.lastDonatedDate.toString(),
+  });
+  console.log(newUser);
   try {
     const userFound = await User.findOne({
       studentId: req.body.studentId,
@@ -17,10 +27,12 @@ router.post("/addNewUser", verifyTokenAndAdmin, async (req, res) => {
     if (userFound) {
       res.status(409).send("user already exists");
     } else {
+      console.log("inside else");
       const savedUser = await newUser.save();
       res.status(200).json(savedUser);
     }
   } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 });
