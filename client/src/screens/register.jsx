@@ -20,7 +20,7 @@ import SearchableDropdown from "react-native-searchable-dropdown";
 import { bloodGroup, districts, subDistricts } from "../../Data/data";
 import SearchAndPic from "./SearchAndPick";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LogBox } from "react-native";
+import { ImageBackground, LogBox, StyleSheet, View } from "react-native";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { register } from "../redux/apiCalls";
 const Register = ({ navigation }) => {
@@ -72,17 +72,22 @@ const Register = ({ navigation }) => {
     }
   };
   return (
-    <Center w="100%">
+    <View
+    
+    style={styles.maincontainer}
+  >
+    
       <ScrollView
         h="100%"
         w="100%"
+         
         _contentContainerStyle={{
           px: "20px",
           mb: "4",
           minW: "72",
         }}
       >
-        <Box safeArea p="2" w="90%" maxW="290" py="8">
+        <Box  safeArea p="2" w="90%" maxW="290" py="8">
           <VStack space={3}>
             <FormControl>
               <FormControl.Label>Name</FormControl.Label>
@@ -228,8 +233,22 @@ const Register = ({ navigation }) => {
           </VStack>
         </Box>
       </ScrollView>
-    </Center>
+    
+    </View>
   );
 };
 
 export default Register;
+
+const styles = StyleSheet.create({
+  maincontainer: {
+    flex: 1,
+    display:'flex',
+    alignItems:'center',
+    justifyContent:'center',
+    width:'100%',
+    marginLeft:15,
+    // backgroundColor:'red'
+  }
+   
+});

@@ -5,11 +5,11 @@ const UserSchema = new mongoose.Schema(
     name: { type: String, required: true },
     mobile: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    bloodGroupId: {
-      type: String,
+    // bloodGroupId: {
+    //   type: String,
 
-      require: true,
-    },
+    //   require: true,
+    // },
     // districtId: { type: String, required: true },
     // subDistrictId: { type: String, required: true },
     bloodGroup: {

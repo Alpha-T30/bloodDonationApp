@@ -12,17 +12,22 @@ import {
   Flex,
   Button,
   Icon,
+  InfoIcon,
+  Pressable,
+  DeleteIcon,
 } from "native-base";
 import moment from "moment";
 import RNBounceable from "@freakycoder/react-native-bounceable";
-import { Linking, Platform } from "react-native";
+import { Linking, Platform, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
+import CustomMenu from "./Menu";
 
 const CustomCard = ({ userData }) => {
   // const [isCapable, setCapability] = React.useState(null);
 
   const user = useSelector((state) => state.persistedData.auth?.currentUser);
+  // console.log(user)
   const dialCall = (number) => {
     let phoneNumber = "";
     if (Platform.OS === "android") {
@@ -74,16 +79,23 @@ const CustomCard = ({ userData }) => {
           <Flex style={{ width: "100%" }} direction="row">
             <Stack flex={"2"} p="4" space={3}>
               <Stack space={2}>
-                <Heading color={"coolGray.500"} size="md" ml="-1">
+                <Heading color={"orange.500"} size="md" ml="-1">
                   {userData.name}
                 </Heading>
+                <Heading color={"coolGray.500"} size="sm" ml="-1">
+                {userData.session}
+                </Heading>
+                <Heading color={"darkBlue.400"} size="sm" ml="-1">
+                {userData.studentId}
+                </Heading>
+                
                 {getdays(userData.lastDonatedDate) > 40 ? (
                   <Heading color={"success.600"} size="md" ml="-1">
-                    {"Capable"}
+                    {"Available"}
                   </Heading>
                 ) : (
                   <Heading color={"error.600"} size="md" ml="-1">
-                    {"Not Capable"}
+                    {"Not Available"}
                   </Heading>
                 )}
               </Stack>
@@ -110,9 +122,29 @@ const CustomCard = ({ userData }) => {
             </Stack>
             <Stack direction={"column"} flex={"1"} p="4" space={3}>
               <Stack direction={"column"} space={2}>
+                
+                {/* <Heading color={"amber.500"} size="md" ml="-1">
+                   <CustomMenu></CustomMenu>
+                </Heading> */}
+                
+                  <View  style={{width:'100%', display:'flex', 
+                flexDirection:'row', alignItems:'center', justifyContent:'space-between' , 
+                 }}>
+
                 <Heading color={"amber.500"} size="md" ml="-1">
                   {userData?.bloodGroup}
                 </Heading>
+                
+                <Stack direction={'row'} space={3}>
+
+          <Pressable> 
+        <InfoIcon size="5" color="green.800" />
+        </Pressable>
+        <Pressable> 
+        <DeleteIcon size="5" color="red.800" />
+        </Pressable>
+                </Stack>
+                  </View>
                 <Text
                   fontSize="xs"
                   _light={{

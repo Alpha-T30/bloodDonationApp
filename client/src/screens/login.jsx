@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { logIn, logIntoApp } from "../redux/apiCalls";
 import { registerSwitch } from "../redux/uiSlice";
 import { Wave } from "react-native-animated-spinkit";
+// import {StyleSheet} from 'react-native'
 
 import {
   Box,
@@ -18,8 +19,10 @@ import {
   NativeBaseProvider,
   Spinner,
   useToast,
+   
 } from "native-base";
 import { loginSuccess } from "../redux/authSlice";
+import { Image, ImageBackground, StyleSheet, View } from "react-native";
 
 const Login = ({ navigation }) => {
   const [formData, setData] = React.useState({});
@@ -32,9 +35,23 @@ const Login = ({ navigation }) => {
     logIntoApp(dispatch, formData, setLoading, toast);
   };
   return (
+    <ImageBackground
+      source={require("../images/loginbg3.jpg")}
+      style={styles.maincontainer}
+    >
+       
+    <View style={styles.logoimg}>
+    <Image
+
+        style={styles.logo}
+        source={require('../images/logo1.png')}
+      />
+    </View>
     <Center w="100%">
+    
       <Box safeArea p="2" py="8" w="90%" maxW="290">
-        <Heading
+      
+        {/* <Heading
           size="lg"
           fontWeight="600"
           color="coolGray.800"
@@ -43,18 +60,8 @@ const Login = ({ navigation }) => {
           }}
         >
           Welcome
-        </Heading>
-        <Heading
-          mt="1"
-          _dark={{
-            color: "warmGray.200",
-          }}
-          color="coolGray.600"
-          fontWeight="medium"
-          size="xs"
-        >
-          Sign in to continue!
-        </Heading>
+        </Heading> */}
+         
 
         <VStack space={3} mt="5">
           <FormControl>
@@ -66,7 +73,7 @@ const Login = ({ navigation }) => {
             />
           </FormControl>
           <FormControl>
-            <FormControl.Label>Password</FormControl.Label>
+            <FormControl.Label >Password</FormControl.Label>
             <Input
               onChangeText={(value) =>
                 setData({ ...formData, password: value })
@@ -111,7 +118,36 @@ const Login = ({ navigation }) => {
         </VStack>
       </Box>
     </Center>
+    </ImageBackground>
+
   );
 };
 
 export default Login;
+
+
+const styles = StyleSheet.create({
+  maincontainer: {
+    flex: 1,
+    display:'flex',
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  container: {
+    flex: 1,
+  },
+  logoimg:{
+     
+    display:'flex',
+    alignItems:'center',
+    justifyContent:'center',
+     
+    
+   
+  } , 
+  logo:{
+    width:150,
+    height:150
+  }
+   
+});

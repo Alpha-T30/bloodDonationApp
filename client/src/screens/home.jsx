@@ -316,7 +316,7 @@ export default function Home({ navigation }) {
                   />
                 }
               >
-                {users.map((user, i) => {
+                {users?.map((user, i) => {
                   return <CustomCard userData={user} key={i}></CustomCard>;
                 })}
               </ScrollView>

@@ -91,7 +91,7 @@ router.post("/register", async (req, res) => {
     lastDonatedDate: req.body.lastDonatedDate,
     // districtId: req.body.districtId,
     // subDistrictId: req.body.subDistrictId,
-    bloodGroupId: req.body.bloodGroupId,
+    // bloodGroupId: req.body.bloodGroupId,
 
     // not ids
     // district: req.body.district,
