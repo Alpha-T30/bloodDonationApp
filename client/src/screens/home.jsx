@@ -51,7 +51,7 @@ export default function Home({ navigation }) {
   // const [date, setDate] = React.useState(new Date());
 
   const toast = useToast();
-  const user = useSelector((state) => state.persistedData.auth?.currentUser);
+  const user = useSelector((state) => state.persistedData.auth?.user);
   const allUsers = useSelector((state) => state.user.allUsers);
 
   const [query, setQuery] = useState("");
@@ -190,7 +190,7 @@ export default function Home({ navigation }) {
       // setShowModal(true);
       navigation.navigate("NewUser");
     } else if (name === "btnProfile") {
-      navigation.navigate("Profile");
+      navigation.navigate("Profile",user);
     }
   };
 
@@ -317,7 +317,7 @@ export default function Home({ navigation }) {
                 }
               >
                 {users?.map((user, i) => {
-                  return <CustomCard userData={user} key={i}></CustomCard>;
+                  return <CustomCard userData={user} navigation={navigation} key={i}></CustomCard>;
                 })}
               </ScrollView>
             </View>

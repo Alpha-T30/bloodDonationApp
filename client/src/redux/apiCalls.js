@@ -4,6 +4,7 @@ import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 import {
   addNewUserSuccess,
+  deleteUserSuccess,
   getAllUserSuccess,
   updateUserSuccess,
 } from "./userSlice";
@@ -77,6 +78,26 @@ export const updateUser = async (dispatch, data, setLoading, toast) => {
     });
   }
 };
+export const deleteUser = async (dispatch, id, setLoading, toast) => {
+  setLoading(true);
+  try {
+    const res = await apiLink.delete(`/users/${id}`);
+    
+    dispatch(deleteUserSuccess(id));
+    setLoading(false);
+    toast.show({
+      title: "User Delation Success",
+      placement: "top",
+    });
+  } catch (error) {
+    
+    setLoading(false);
+    toast.show({
+      title: "User Delation Failed",
+      placement: "top",
+    });
+  }
+};
 
 export const logIntoApp = async (dispatch, logInData, setLoading, toast) => {
   setLoading(true);
@@ -116,6 +137,8 @@ export const logOut = async (dispatch) => {
     console.log("Log out success");
   }
 };
+
+
 
 export const allClear = async (dispatch) => {
   await SecureStore.deleteItemAsync("tokens");

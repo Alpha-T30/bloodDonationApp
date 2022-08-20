@@ -17,9 +17,12 @@ const userSlice = createSlice({
         state.allUsers.findIndex((user) => user._id === action.payload._id)
       ] = action.payload;
     },
+    deleteUserSuccess:(state,action)=>{
+      state.allUsers=state.allUsers.filter(user=>user._id!==id)
+    }
   },
 });
 
-export const { getAllUserSuccess, addNewUserSuccess, updateUserSuccess } =
+export const { getAllUserSuccess, addNewUserSuccess, updateUserSuccess ,deleteUserSuccess} =
   userSlice.actions;
 export default userSlice.reducer;

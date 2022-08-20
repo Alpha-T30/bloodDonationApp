@@ -29,12 +29,12 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import RNBounceable from "@freakycoder/react-native-bounceable";
 
 import moment from "moment";
-const Profile = ({ navigation }) => {
+const Profile = ({route, navigation }) => {
   const [districtSelect, setDistrict] = React.useState(null);
   const [subDistrict, setSubDistrict] = React.useState([]);
   const [singleSub, setSingleSub] = React.useState(null);
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.persistedData.auth?.currentUser);
+  const user = route.params
   const [bloodGroupselect, setBloodGroup] = React.useState(user.bloodGroupId);
   const [formData, setData] = React.useState({
     ...user,
@@ -43,8 +43,7 @@ const Profile = ({ navigation }) => {
   const [isLoading, setLoading] = React.useState(false);
   const toast = useToast();
   const [date, setDate] = React.useState(user.lastDonatedDate);
-  console.log(date, "line 45");
-  console.log(user.lastDonatedDate, "line 46");
+ 
   const [show, setshow] = React.useState(false);
   const [isCapable, setCapability] = React.useState(null);
   React.useEffect(() => {

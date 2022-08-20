@@ -15,16 +15,23 @@ import {
   InfoIcon,
   Pressable,
   DeleteIcon,
+  useToast,
 } from "native-base";
 import moment from "moment";
 import RNBounceable from "@freakycoder/react-native-bounceable";
 import { Linking, Platform, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CustomMenu from "./Menu";
+import { deleteUser } from "../redux/apiCalls";
+import { useState } from "react";
 
-const CustomCard = ({ userData }) => {
+const CustomCard = ({ userData,navigation }) => {
   // const [isCapable, setCapability] = React.useState(null);
+  const toast = useToast();
+  const dispatch = useDispatch()
+
+  const [isLoading,setIsLoading] = useState(false)
 
   const user = useSelector((state) => state.persistedData.auth?.currentUser);
   // console.log(user)
@@ -53,6 +60,9 @@ const CustomCard = ({ userData }) => {
       return "";
     }
   };
+  const handleDeleteUser =(userId)=>{
+    deleteUser(dispatch, userId, setIsLoading, toast)
+  }
   return (
     <RNBounceable bounceEffect={1}>
       <Box alignItems="center">
@@ -135,15 +145,17 @@ const CustomCard = ({ userData }) => {
                   {userData?.bloodGroup}
                 </Heading>
                 
-                <Stack direction={'row'} space={3}>
+             { userData.isAdmin?  <Stack direction={'row'} space={3}>
 
-          <Pressable> 
+          <Pressable onPress={()=>{
+            navigation.navigate("Profile",userData)
+          }}> 
         <InfoIcon size="5" color="green.800" />
         </Pressable>
-        <Pressable> 
+        <Pressable onPress={()=>handleDeleteUser(userData._id)}> 
         <DeleteIcon size="5" color="red.800" />
         </Pressable>
-                </Stack>
+                </Stack>:<Stack direction={'row'} space={3}></Stack>}
                   </View>
                 <Text
                   fontSize="xs"
