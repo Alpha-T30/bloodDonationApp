@@ -88,6 +88,7 @@ router.post("/register", async (req, res) => {
     name: req.body.name,
     mobile: req.body.mobile,
     email: req.body.email,
+    gender: req.body.gender,
     lastDonatedDate: req.body.lastDonatedDate,
     // districtId: req.body.districtId,
     // subDistrictId: req.body.subDistrictId,

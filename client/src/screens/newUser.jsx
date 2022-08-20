@@ -70,9 +70,7 @@ const NewUser = ({ navigation }) => {
         h="100%"
         w="100%"
         _contentContainerStyle={{
-          px: "20px",
-          mb: "4",
-          minW: "72",
+          alignItems: "center",
         }}
       >
         <Box safeArea p="2" w="90%" maxW="290" py="8">

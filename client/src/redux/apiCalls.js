@@ -34,7 +34,8 @@ export const registerByAdmin = async (
   sendingData,
   setLoading,
   dispatch,
-  toast
+  toast,
+  setData
 ) => {
   setLoading(true);
   try {
@@ -46,6 +47,17 @@ export const registerByAdmin = async (
     toast.show({
       title: "New user add success",
       placement: "top",
+    });
+    setData({
+      name: "",
+      mobile: "",
+      studentId: "",
+      session: "",
+      bloodGroup: "",
+      password: "",
+      lastDonatedDate: "",
+      bloodGroupId: "",
+      gender: "",
     });
   } catch (error) {
     console.log(error);
@@ -81,8 +93,8 @@ export const updateUser = async (dispatch, data, setLoading, toast) => {
 export const deleteUser = async (dispatch, id, setLoading, toast) => {
   setLoading(true);
   try {
-      await apiLink.delete(`/users/${id}`);
-    
+    await apiLink.delete(`/users/${id}`);
+
     dispatch(deleteUserSuccess(id));
     setLoading(false);
     toast.show({
@@ -90,7 +102,6 @@ export const deleteUser = async (dispatch, id, setLoading, toast) => {
       placement: "top",
     });
   } catch (error) {
-    
     setLoading(false);
     toast.show({
       title: "User Delation Failed",
@@ -99,7 +110,13 @@ export const deleteUser = async (dispatch, id, setLoading, toast) => {
   }
 };
 
-export const logIntoApp = async (dispatch, logInData, setLoading, toast,navigation) => {
+export const logIntoApp = async (
+  dispatch,
+  logInData,
+  setLoading,
+  toast,
+  navigation
+) => {
   setLoading(true);
   try {
     const res = await publicRequest.post("/auth/login", logInData);
@@ -111,10 +128,10 @@ export const logIntoApp = async (dispatch, logInData, setLoading, toast,navigati
     // navigation.navigate("Home")
   } catch (error) {
     setLoading(false);
-    console.log("errorlogin",error.response.data);
+    console.log("errorlogin", error.response.data);
     setLoading(false);
     toast.show({
-      placement: "bottom",
+      placement: "top",
       title: error.response.data,
     });
     setLoading(false);
@@ -138,8 +155,6 @@ export const logOut = async (dispatch) => {
     console.log("Log out success");
   }
 };
-
-
 
 export const allClear = async (dispatch) => {
   await SecureStore.deleteItemAsync("tokens");

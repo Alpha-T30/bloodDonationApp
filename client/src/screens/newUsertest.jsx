@@ -30,8 +30,9 @@ import {
   View,
 } from "react-native";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
-import { register } from "../redux/apiCalls";
-const Register = ({ navigation }) => {
+import { register, registerByAdmin } from "../redux/apiCalls";
+import { useDispatch } from "react-redux";
+const NewUser = ({ navigation }) => {
   const [districtSelect, setDistrict] = React.useState(null);
   const [bloodGroupselect, setBloodGroup] = React.useState([]);
   const [subDistrict, setSubDistrict] = React.useState([]);
@@ -40,15 +41,18 @@ const Register = ({ navigation }) => {
     name: "",
     mobile: "",
     studentId: "",
-    seassion: "",
+    session: "",
+    bloodGroup: "",
     password: "",
-    confirmPass: "",
+    lastDonatedDate: "",
+    bloodGroupId: "",
+    gender: "",
   });
   const [error, setError] = React.useState(false);
   const [errors, setErrors] = React.useState({});
   const [isLoading, setLoading] = React.useState(false);
   const toast = useToast();
-
+  const dispatch = useDispatch();
   React.useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
@@ -72,8 +76,7 @@ const Register = ({ navigation }) => {
       sendingData?.name === undefined ||
       sendingData?.name.length < 3 ||
       sendingData?.mobile?.length !== 11 ||
-      sendingData?.studentId.length !== 10 ||
-      sendingData?.password.length < 6
+      sendingData?.studentId.length !== 10
     ) {
       return false;
     }
@@ -83,32 +86,28 @@ const Register = ({ navigation }) => {
 
   const onSubmit = () => {
     const findblood = bloodGroup.find((i) => i.id === bloodGroupselect);
+    console.log("first");
     // const findDistrict = districts.find((i) => i.id === districtSelect);
     // const findSubDistrict = subDistricts.find((i) => i.id === singleSub);
-    if (formData?.password !== formData?.confirmPass) {
-      setError(true);
-    } else {
-      const sendingData = {
-        ...formData,
-        bloodGroupId: bloodGroupselect,
-        bloodGroup: findblood?.name,
-        lastDonatedDate: new Date(),
 
-        // districtId: districtSelect,
-        // subDistrictId: singleSub,
+    const sendingData = {
+      ...formData,
+      bloodGroupId: bloodGroupselect,
+      bloodGroup: findblood?.name,
+      lastDonatedDate: new Date(),
 
-        // district: findDistrict.name,
-        // subDistrict: findSubDistrict.name,
-      };
-      console.log(sendingData);
+      password: formData.password ? formData.password : "123456",
 
-      validate(sendingData)
-        ? register(sendingData, setLoading, navigation, toast)
-        : toast.show({
-            placement: "top",
-            title: "Validation Failed",
-          });
-    }
+      email: "",
+    };
+    console.log(sendingData);
+
+    validate(sendingData)
+      ? registerByAdmin(sendingData, setLoading, dispatch, toast, setData)
+      : toast.show({
+          placement: "top",
+          title: "Validation Failed",
+        });
   };
   return (
     <Center w="100%">
@@ -117,7 +116,7 @@ const Register = ({ navigation }) => {
           h="100%"
           w={screenWidth}
           bg={"red.100"}
-          mt="7"
+          mt="-7"
           _contentContainerStyle={{
             alignItems: "center",
 
@@ -137,6 +136,7 @@ const Register = ({ navigation }) => {
                   Name
                 </FormControl.Label>
                 <Input
+                  value={formData.name}
                   onChangeText={(value) =>
                     setData({ ...formData, name: value })
                   }
@@ -149,7 +149,6 @@ const Register = ({ navigation }) => {
                   </Text>
                 }
               </FormControl>
-
               <FormControl isRequired>
                 <FormControl.Label
                   _text={{
@@ -159,6 +158,7 @@ const Register = ({ navigation }) => {
                   Mobile
                 </FormControl.Label>
                 <Input
+                  value={formData.mobile}
                   onChangeText={(value) =>
                     setData({ ...formData, mobile: value })
                   }
@@ -179,6 +179,7 @@ const Register = ({ navigation }) => {
               >
                 <FormControl.Label>Student ID</FormControl.Label>
                 <Input
+                  value={formData.studentId}
                   onChangeText={(value) =>
                     setData({ ...formData, studentId: value })
                   }
@@ -200,6 +201,7 @@ const Register = ({ navigation }) => {
                   Session
                 </FormControl.Label>
                 <Input
+                  value={formData.session}
                   onChangeText={(value) =>
                     setData({ ...formData, session: value })
                   }
@@ -214,7 +216,7 @@ const Register = ({ navigation }) => {
                   Blood Group
                 </FormControl.Label>
                 <Select
-                  selectedValue={bloodGroupselect}
+                  selectedValue={formData.bloodGroup}
                   minWidth="200"
                   accessibilityLabel="Select Blood Group"
                   placeholder="Select Blood Group"
@@ -223,7 +225,9 @@ const Register = ({ navigation }) => {
                     endIcon: <CheckIcon size="5" />,
                   }}
                   mt={1}
-                  onValueChange={(itemValue) => setBloodGroup(itemValue)}
+                  onValueChange={(itemValue) =>
+                    setData({ ...formData, bloodGroup: itemValue })
+                  }
                 >
                   {bloodGroup.map((item, i) => {
                     return (
@@ -232,6 +236,7 @@ const Register = ({ navigation }) => {
                   })}
                 </Select>
               </FormControl>
+
               <FormControl isRequired={true}>
                 <FormControl.Label
                   _text={{
@@ -260,7 +265,7 @@ const Register = ({ navigation }) => {
                 </Select>
               </FormControl>
 
-              <FormControl isRequired>
+              {/* <FormControl isRequired>
                 <Stack>
                   <FormControl.Label
                     _text={{
@@ -307,36 +312,14 @@ const Register = ({ navigation }) => {
                       : ""}
                   </Text>
                 </Stack>
-              </FormControl>
+              </FormControl> */}
               <Button onPress={onSubmit} mt="2" colorScheme="indigo">
-                {isLoading ? <Spinner color="warning.500" /> : "Sign up"}
+                {isLoading ? <Spinner color="warning.500" /> : "Add User"}
               </Button>
 
-              <Text style={{ color: "red" }}>
+              {/* <Text style={{ color: "red" }}>
                 {error ? "Password Does Not Matched" : ""}
-              </Text>
-              <HStack mt="6" justifyContent="center">
-                <Text
-                  fontSize="sm"
-                  color="coolGray.600"
-                  _dark={{
-                    color: "warmGray.200",
-                  }}
-                >
-                  Already a user?
-                </Text>
-                <Text
-                  style={{
-                    color: "blue",
-                    textDecorationLine: "underline",
-                  }}
-                  onPress={() => {
-                    navigation.goBack();
-                  }}
-                >
-                  Login
-                </Text>
-              </HStack>
+              </Text> */}
             </VStack>
           </Box>
         </ScrollView>
@@ -345,7 +328,7 @@ const Register = ({ navigation }) => {
   );
 };
 
-export default Register;
+export default NewUser;
 
 const styles = StyleSheet.create({
   maincontainer: {

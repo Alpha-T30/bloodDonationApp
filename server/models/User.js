@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const UserSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
+    gender: { type: String, required: true },
     mobile: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     // bloodGroupId: {
@@ -29,6 +30,7 @@ const UserSchema = new mongoose.Schema(
       require: true,
       unique: true,
     },
+
     // district: { type: String, required: true },
     // subDistrict: { type: String, required: true },
 

@@ -32,7 +32,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { bloodGroup } from "./Data/data";
 import { useState } from "react";
 import Profile from "./src/screens/profile";
-import NewUser from "./src/screens/newUser";
+import NewUser from "./src/screens/newUsertest";
 
 const theme = extendTheme({
   components: {

@@ -52,8 +52,8 @@ export default function Home({ navigation }) {
 
   const toast = useToast();
   const user = useSelector((state) => state.persistedData.auth?.currentUser);
-  console.log("user55",user)
-   
+  console.log("user55", user);
+
   const allUsers = useSelector((state) => state.user.allUsers);
 
   const [query, setQuery] = useState("");
@@ -76,6 +76,20 @@ export default function Home({ navigation }) {
       name: "btnAddUser",
       position: 2,
     },
+    {
+      text: "Log Out",
+      icon: require("../images/exit.png"),
+      name: "btnLogOut",
+      position: 1,
+    },
+    {
+      text: "Profile",
+      icon: require("../images/exit.png"),
+      name: "btnProfile",
+      position: 3,
+    },
+  ];
+  const actions1 = [
     {
       text: "Log Out",
       icon: require("../images/exit.png"),
@@ -192,9 +206,9 @@ export default function Home({ navigation }) {
       // setShowModal(true);
       navigation.navigate("NewUser");
     } else if (name === "btnProfile") {
-      console.log("btnprofile",user)
- 
-      navigation.navigate("Profile",user)
+      console.log("btnprofile", user);
+
+      navigation.navigate("Profile", user);
     }
   };
 
@@ -321,7 +335,13 @@ export default function Home({ navigation }) {
                 }
               >
                 {users?.map((user, i) => {
-                  return <CustomCard userData={user} navigation={navigation} key={i}></CustomCard>;
+                  return (
+                    <CustomCard
+                      userData={user}
+                      navigation={navigation}
+                      key={i}
+                    ></CustomCard>
+                  );
                 })}
               </ScrollView>
             </View>
@@ -329,7 +349,7 @@ export default function Home({ navigation }) {
 
           <FloatingAction
             color="#4D4C7D"
-            actions={actions}
+            actions={user?.isAdmin ? actions : actions1}
             onPressItem={(name) => {
               handleMenu(name);
             }}

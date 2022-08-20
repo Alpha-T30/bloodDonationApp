@@ -29,14 +29,14 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import RNBounceable from "@freakycoder/react-native-bounceable";
 
 import moment from "moment";
-const Profile = ({route, navigation }) => {
+const Profile = ({ route, navigation }) => {
   const [districtSelect, setDistrict] = React.useState(null);
   const [subDistrict, setSubDistrict] = React.useState([]);
   const [singleSub, setSingleSub] = React.useState(null);
   const dispatch = useDispatch();
-  
+
   const [user, setUser] = React.useState(route.params);
-  console.log("user",user)
+
   const [bloodGroupselect, setBloodGroup] = React.useState(user?.bloodGroupId);
   const [formData, setData] = React.useState({
     ...user,
@@ -45,13 +45,13 @@ const Profile = ({route, navigation }) => {
   const [isLoading, setLoading] = React.useState(false);
   const toast = useToast();
   const [date, setDate] = React.useState(user?.lastDonatedDate);
- 
+
   const [show, setshow] = React.useState(false);
   const [isCapable, setCapability] = React.useState(null);
   React.useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
-  const screenWidth = Dimensions.get('window').width;
+  const screenWidth = Dimensions.get("window").width;
   const onSubmit = () => {
     const findblood = bloodGroup.find((i) => i.id === bloodGroupselect);
 
@@ -98,10 +98,9 @@ const Profile = ({route, navigation }) => {
       <ScrollView
         h="100%"
         w={screenWidth}
-        bg={'red.100'}
+        bg={"red.100"}
         _contentContainerStyle={{
-          alignItems:'center',
-
+          alignItems: "center",
         }}
       >
         <Box safeArea p="2" w="90%" maxW="290" py="8">
