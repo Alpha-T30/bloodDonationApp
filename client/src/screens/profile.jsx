@@ -20,7 +20,7 @@ import SearchableDropdown from "react-native-searchable-dropdown";
 import { bloodGroup, districts, subDistricts } from "../../Data/data";
 import SearchAndPic from "./SearchAndPick";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LogBox } from "react-native";
+import { Dimensions, LogBox } from "react-native";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { register, updateUser } from "../redux/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
@@ -51,7 +51,7 @@ const Profile = ({route, navigation }) => {
   React.useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
-
+  const screenWidth = Dimensions.get('window').width;
   const onSubmit = () => {
     const findblood = bloodGroup.find((i) => i.id === bloodGroupselect);
 
@@ -97,11 +97,11 @@ const Profile = ({route, navigation }) => {
     <Center w="100%">
       <ScrollView
         h="100%"
-        w="100%"
+        w={screenWidth}
+        bg={'red.100'}
         _contentContainerStyle={{
-          px: "20px",
-          mb: "4",
-          minW: "72",
+          alignItems:'center',
+
         }}
       >
         <Box safeArea p="2" w="90%" maxW="290" py="8">

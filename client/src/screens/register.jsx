@@ -15,12 +15,14 @@ import {
   CheckIcon,
   Spinner,
   useToast,
+  Stack,
+  WarningOutlineIcon,
 } from "native-base";
 import SearchableDropdown from "react-native-searchable-dropdown";
 import { bloodGroup, districts, subDistricts } from "../../Data/data";
 import SearchAndPic from "./SearchAndPick";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ImageBackground, LogBox, StyleSheet, View } from "react-native";
+import { Dimensions, ImageBackground, LogBox, StyleSheet, View } from "react-native";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { register } from "../redux/apiCalls";
 const Register = ({ navigation }) => {
@@ -36,6 +38,8 @@ const Register = ({ navigation }) => {
   React.useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
+
+  const screenWidth = Dimensions.get('window').width;
   const handleDistrictChange = (item) => {
     setDistrict(item);
     const temp = subDistricts.filter((i) => i.districtId === item);
@@ -72,19 +76,33 @@ const Register = ({ navigation }) => {
     }
   };
   return (
-    <View
-    
-    style={styles.maincontainer}
-  >
-    
+     
+    <Center w="100%">  
+
+ 
+
+      
+        
+         
+
+        <Stack mt="1">
+          
+        
       <ScrollView
         h="100%"
-        w="100%"
+        w={screenWidth}
+        bg={'red.100'}
+        mt='7'
+       
+       
          
         _contentContainerStyle={{
-          px: "20px",
-          mb: "4",
-          minW: "72",
+          alignItems:'center',
+        
+        
+          // px: "90px",
+          // mb: "4",
+          // minW:`${screenWidth}`
         }}
       >
         <Box  safeArea p="2" w="90%" maxW="290" py="8">
@@ -94,6 +112,8 @@ const Register = ({ navigation }) => {
               <Input
                 onChangeText={(value) => setData({ ...formData, name: value })}
               />
+
+              
             </FormControl>
             <FormControl>
               <FormControl.Label>Mobile</FormControl.Label>
@@ -102,6 +122,9 @@ const Register = ({ navigation }) => {
                   setData({ ...formData, mobile: value })
                 }
               />
+              <FormControl.HelperText>
+              Must be atleast 11 characters and start with 01
+            </FormControl.HelperText>
             </FormControl>
             <FormControl>
               <FormControl.Label >Student ID</FormControl.Label>
@@ -110,6 +133,9 @@ const Register = ({ navigation }) => {
                   setData({ ...formData, studentId: value })
                 }
               />
+              <FormControl.HelperText>
+              Must be atleast 10 characters.
+            </FormControl.HelperText>
             </FormControl>
             <FormControl>
               <FormControl.Label>Session</FormControl.Label>
@@ -183,23 +209,45 @@ const Register = ({ navigation }) => {
               </Select>
             </FormControl> */}
 
-            <FormControl>
+            <FormControl isRequired>
+              <Stack>
+
               <FormControl.Label>Password</FormControl.Label>
               <Input
                 onChangeText={(value) =>
                   setData({ ...formData, password: value })
                 }
                 type="password"
-              />
+                />
+
+<FormControl.HelperText>
+              Must be atleast 6 characters.
+            </FormControl.HelperText>
+            <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+              Atleast 6 characters are required.
+            </FormControl.ErrorMessage>
+                </Stack>
             </FormControl>
-            <FormControl>
+
+
+            <FormControl isRequired>
+              <Stack>
+
               <FormControl.Label>Confirm Password</FormControl.Label>
               <Input
                 onChangeText={(value) =>
                   setData({ ...formData, confirmPass: value })
                 }
                 type="password"
-              />
+                />
+<FormControl.HelperText>
+              Must be atleast 6 characters.
+            </FormControl.HelperText>
+            <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+              Atleast 6 characters are required.
+            </FormControl.ErrorMessage>
+
+                </Stack>
             </FormControl>
             <Button onPress={onSubmit} mt="2" colorScheme="indigo">
               {isLoading ? <Spinner color="warning.500" /> : "Sign up"}
@@ -233,8 +281,13 @@ const Register = ({ navigation }) => {
           </VStack>
         </Box>
       </ScrollView>
-    
-    </View>
+      
+
+      </Stack>
+       
+    </Center>
+
+     
   );
 };
 

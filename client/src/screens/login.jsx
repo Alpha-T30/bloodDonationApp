@@ -32,7 +32,7 @@ const Login = ({ navigation }) => {
 
   const onSubmit = () => {
     console.log(formData);
-    logIntoApp(dispatch, formData, setLoading, toast);
+    logIntoApp(dispatch, formData, setLoading, toast,navigation);
   };
   return (
     <ImageBackground
