@@ -26,12 +26,12 @@ import CustomMenu from "./Menu";
 import { deleteUser } from "../redux/apiCalls";
 import { useState } from "react";
 
-const CustomCard = ({ userData,navigation }) => {
+const CustomCard = ({ userData, navigation }) => {
   // const [isCapable, setCapability] = React.useState(null);
   const toast = useToast();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  const [isLoading,setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   const user = useSelector((state) => state.persistedData.auth?.currentUser);
   // console.log(user)
@@ -60,10 +60,10 @@ const CustomCard = ({ userData,navigation }) => {
       return "";
     }
   };
-  const handleDeleteUser =(userId)=>{
+  const handleDeleteUser = (userId) => {
     // console.log(userId)
-    deleteUser(dispatch, userId, setIsLoading, toast)
-  }
+    deleteUser(dispatch, userId, setIsLoading, toast);
+  };
   return (
     <RNBounceable bounceEffect={1}>
       <Box alignItems="center">
@@ -94,12 +94,12 @@ const CustomCard = ({ userData,navigation }) => {
                   {userData.name}
                 </Heading>
                 <Heading color={"coolGray.500"} size="sm" ml="-1">
-                {userData.session}
+                  {userData.session}
                 </Heading>
                 <Heading color={"darkBlue.400"} size="sm" ml="-1">
-                {userData.studentId}
+                  {userData.studentId}
                 </Heading>
-                
+
                 {getdays(userData.lastDonatedDate) > 40 ? (
                   <Heading color={"success.600"} size="md" ml="-1">
                     {"Available"}
@@ -133,31 +133,40 @@ const CustomCard = ({ userData,navigation }) => {
             </Stack>
             <Stack direction={"column"} flex={"1"} p="4" space={3}>
               <Stack direction={"column"} space={2}>
-                
                 {/* <Heading color={"amber.500"} size="md" ml="-1">
                    <CustomMenu></CustomMenu>
                 </Heading> */}
-                
-                  <View  style={{width:'100%', display:'flex', 
-                flexDirection:'row', alignItems:'center', justifyContent:'space-between' , 
-                 }}>
 
-                <Heading color={"amber.500"} size="md" ml="-1">
-                  {userData?.bloodGroup}
-                </Heading>
-                
-             {( user.isAdmin && userData._id!==user._id)?  <Stack direction={'row'} space={3}>
+                <View
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Heading color={"amber.500"} size="md" ml="-1">
+                    {userData?.bloodGroup}
+                  </Heading>
 
-          <Pressable onPress={()=>{
-            navigation.navigate("Profile",userData)
-          }}> 
-        <InfoIcon size="5" color="green.800" />
-        </Pressable>
-        <Pressable onPress={()=>handleDeleteUser(userData._id)}> 
-        <DeleteIcon size="5" color="red.800" />
-        </Pressable>
-                </Stack>:<Stack direction={'row'} space={3}></Stack>}
-                  </View>
+                  {user.isAdmin && userData._id !== user._id ? (
+                    <Stack direction={"row"} space={3}>
+                      <Pressable
+                        onPress={() => {
+                          navigation.navigate("Profile", userData);
+                        }}
+                      >
+                        <InfoIcon size="5" color="green.800" />
+                      </Pressable>
+                      <Pressable onPress={() => handleDeleteUser(userData._id)}>
+                        <DeleteIcon size="5" color="red.800" />
+                      </Pressable>
+                    </Stack>
+                  ) : (
+                    <Stack direction={"row"} space={3}></Stack>
+                  )}
+                </View>
                 <Text
                   fontSize="xs"
                   _light={{

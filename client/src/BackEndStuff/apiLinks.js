@@ -2,8 +2,8 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
 import jwt_decode from "jwt-decode";
-const baseUrl = "http://192.168.0.113:8000/api/";
-// const baseUrl = "https://blooddonationru.herokuapp.com/api/";
+// const baseUrl = "http://192.168.0.113:8000/api/";
+const baseUrl = "https://blooddonationru.herokuapp.com/api/";
 
 export const publicRequest = axios.create({
   baseURL: baseUrl,

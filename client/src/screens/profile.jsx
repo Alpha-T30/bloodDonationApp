@@ -22,7 +22,7 @@ import SearchAndPic from "./SearchAndPick";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Dimensions, LogBox } from "react-native";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
-import { register, updateUser } from "../redux/apiCalls";
+import { register, updateGeneralUser, updateUser } from "../redux/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -35,7 +35,7 @@ const Profile = ({ route, navigation }) => {
   const [singleSub, setSingleSub] = React.useState(null);
   const dispatch = useDispatch();
 
-  const [user, setUser] = React.useState(route.params);
+  const user = route.params;
 
   const [bloodGroupselect, setBloodGroup] = React.useState(user?.bloodGroupId);
   const [formData, setData] = React.useState({
@@ -53,17 +53,18 @@ const Profile = ({ route, navigation }) => {
   }, []);
   const screenWidth = Dimensions.get("window").width;
   const onSubmit = () => {
-    const findblood = bloodGroup.find((i) => i.id === bloodGroupselect);
-
     const sendingData = {
       ...formData,
-      bloodGroupId: bloodGroupselect,
-      bloodGroup: findblood?.name,
+
       lastDonatedDate: date,
     };
 
     console.log(sendingData);
-    updateUser(dispatch, sendingData, setLoading, toast);
+    if (user.isAdmin) {
+      updateUser(dispatch, sendingData, setLoading, toast);
+    } else {
+      updateGeneralUser(dispatch, sendingData, setLoading, toast);
+    }
     // register(sendingData, setLoading, navigation, toast);
   };
 
@@ -179,7 +180,7 @@ const Profile = ({ route, navigation }) => {
             <FormControl>
               <FormControl.Label>Blood Group</FormControl.Label>
               <Select
-                selectedValue={bloodGroupselect}
+                selectedValue={formData.bloodGroup}
                 minWidth="200"
                 accessibilityLabel="Select Blood Group"
                 placeholder="Select Blood Group"
@@ -188,11 +189,13 @@ const Profile = ({ route, navigation }) => {
                   endIcon: <CheckIcon size="5" />,
                 }}
                 mt={1}
-                onValueChange={(itemValue) => setBloodGroup(itemValue)}
+                onValueChange={(itemValue) =>
+                  setData({ ...formData, bloodGroup: itemValue })
+                }
               >
                 {bloodGroup.map((item, i) => {
                   return (
-                    <Select.Item key={i} label={item.name} value={item.id} />
+                    <Select.Item key={i} label={item.name} value={item.name} />
                   );
                 })}
               </Select>

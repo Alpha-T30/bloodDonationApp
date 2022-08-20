@@ -90,6 +90,26 @@ export const updateUser = async (dispatch, data, setLoading, toast) => {
     });
   }
 };
+export const updateGeneralUser = async (dispatch, data, setLoading, toast) => {
+  setLoading(true);
+  try {
+    const res = await apiLink.put(`/users/${data._id}`, data);
+    dispatch(updateUserSuccess(res.data));
+    // dispatch(usrUpdate(res.data));
+    setLoading(false);
+    toast.show({
+      title: "User Update Success",
+      placement: "top",
+    });
+  } catch (error) {
+    console.log(error);
+    setLoading(false);
+    toast.show({
+      title: "User Update Failed",
+      placement: "top",
+    });
+  }
+};
 export const deleteUser = async (dispatch, id, setLoading, toast) => {
   setLoading(true);
   try {
