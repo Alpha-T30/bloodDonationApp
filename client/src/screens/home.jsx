@@ -51,7 +51,9 @@ export default function Home({ navigation }) {
   // const [date, setDate] = React.useState(new Date());
 
   const toast = useToast();
-  const user = useSelector((state) => state.persistedData.auth?.user);
+  const user = useSelector((state) => state.persistedData.auth?.currentUser);
+  console.log("user55",user)
+   
   const allUsers = useSelector((state) => state.user.allUsers);
 
   const [query, setQuery] = useState("");
@@ -190,7 +192,9 @@ export default function Home({ navigation }) {
       // setShowModal(true);
       navigation.navigate("NewUser");
     } else if (name === "btnProfile") {
-      navigation.navigate("Profile",user);
+      console.log("btnprofile",user)
+ 
+      navigation.navigate("Profile",user)
     }
   };
 

@@ -104,7 +104,7 @@ const Register = ({ navigation }) => {
               />
             </FormControl>
             <FormControl>
-              <FormControl.Label>Student ID</FormControl.Label>
+              <FormControl.Label >Student ID</FormControl.Label>
               <Input
                 onChangeText={(value) =>
                   setData({ ...formData, studentId: value })

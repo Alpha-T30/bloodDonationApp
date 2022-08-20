@@ -55,7 +55,7 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({ studentId: req.body.studentId });
 
     if (!user) {
-      res.status(401).json("Wrong credentials!");
+      res.status(401).json("Wrong studentId!");
     } else {
       const hashedPassword = CryptoJS.AES.decrypt(
         user.password,
@@ -63,7 +63,7 @@ router.post("/login", async (req, res) => {
       );
       const OriginalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
       if (OriginalPassword !== req.body.password) {
-        res.status(401).json("Wrong credentials!");
+        res.status(401).json("Wrong Password!");
       } else {
         const accessToken = generateAccessToken(user);
         const refreshToken = generateRefreshToken(user);

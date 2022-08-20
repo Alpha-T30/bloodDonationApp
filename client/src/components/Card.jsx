@@ -61,6 +61,7 @@ const CustomCard = ({ userData,navigation }) => {
     }
   };
   const handleDeleteUser =(userId)=>{
+    // console.log(userId)
     deleteUser(dispatch, userId, setIsLoading, toast)
   }
   return (
@@ -145,7 +146,7 @@ const CustomCard = ({ userData,navigation }) => {
                   {userData?.bloodGroup}
                 </Heading>
                 
-             { userData.isAdmin?  <Stack direction={'row'} space={3}>
+             {( user.isAdmin && userData._id!==user._id)?  <Stack direction={'row'} space={3}>
 
           <Pressable onPress={()=>{
             navigation.navigate("Profile",userData)

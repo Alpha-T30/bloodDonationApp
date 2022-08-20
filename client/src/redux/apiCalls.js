@@ -81,7 +81,7 @@ export const updateUser = async (dispatch, data, setLoading, toast) => {
 export const deleteUser = async (dispatch, id, setLoading, toast) => {
   setLoading(true);
   try {
-    const res = await apiLink.delete(`/users/${id}`);
+      await apiLink.delete(`/users/${id}`);
     
     dispatch(deleteUserSuccess(id));
     setLoading(false);
@@ -99,22 +99,23 @@ export const deleteUser = async (dispatch, id, setLoading, toast) => {
   }
 };
 
-export const logIntoApp = async (dispatch, logInData, setLoading, toast) => {
+export const logIntoApp = async (dispatch, logInData, setLoading, toast,navigation) => {
   setLoading(true);
   try {
     const res = await publicRequest.post("/auth/login", logInData);
 
     await SecureStore.setItemAsync("tokens", JSON.stringify(res.data.tokens));
 
-    dispatch(loginSuccess(res.data));
     setLoading(false);
+    dispatch(loginSuccess(res.data));
+    // navigation.navigate("Home")
   } catch (error) {
     setLoading(false);
-    console.log(error);
+    console.log("errorlogin",error.response.data);
     setLoading(false);
     toast.show({
       placement: "bottom",
-      title: "Login failed",
+      title: error.response.data,
     });
     setLoading(false);
     throw error;

@@ -34,15 +34,17 @@ const Profile = ({route, navigation }) => {
   const [subDistrict, setSubDistrict] = React.useState([]);
   const [singleSub, setSingleSub] = React.useState(null);
   const dispatch = useDispatch();
-  const user = route.params
-  const [bloodGroupselect, setBloodGroup] = React.useState(user.bloodGroupId);
+  
+  const [user, setUser] = React.useState(route.params);
+  console.log("user",user)
+  const [bloodGroupselect, setBloodGroup] = React.useState(user?.bloodGroupId);
   const [formData, setData] = React.useState({
     ...user,
   });
   const [error, setError] = React.useState(false);
   const [isLoading, setLoading] = React.useState(false);
   const toast = useToast();
-  const [date, setDate] = React.useState(user.lastDonatedDate);
+  const [date, setDate] = React.useState(user?.lastDonatedDate);
  
   const [show, setshow] = React.useState(false);
   const [isCapable, setCapability] = React.useState(null);
